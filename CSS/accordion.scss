@@ -1,0 +1,154 @@
+$blue: #0465ac;
+$gray: #999;
+$black: #333;
+$borderColor: #e4e6e5;
+$tablet_breakpoint: 840px;
+$wide_breakpoint: 1280px;
+$x_wide_breakpoint: 1366px;
+
+// Function to add font-size, font-weight and color.
+@mixin sizeWeightColor($size, $weight, $color) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+}
+
+// Transition function to make animation smoother.
+@mixin transition($property) {
+  transition: $property 0.45s;
+}
+
+// Media query function.
+@mixin mediaMinMax($min, $max, $width) {
+  @media (min-width: $min) and (max-width: #{$max - 1px}) {
+    #my-accordion {
+      width: $width;
+    }
+  }
+}
+
+#global-title {
+  height: 100px;
+  @include sizeWeightColor(18px, 400, $gray);
+  background-color: $black;
+  padding: 25px 30px;
+}
+
+#my-accordion {
+  width: 80%;
+  margin: 50px 25px;
+  box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.2);
+}
+
+.main-title {
+  display: flex;
+  align-items: center;
+  @include sizeWeightColor(18px, 400, $black);
+  height: 60px;
+  padding-left: 25px;
+  border-bottom: 1px solid $borderColor;
+  background-color: whitesmoke;
+}
+
+.panel {
+  // To make content disappear when is close.
+  overflow: hidden;
+  border-bottom: 1px solid $borderColor;
+
+  &:last-child {
+    border: none;
+  }
+
+  &-label {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 25px;
+    background-color: whitesmoke;
+    @include transition(margin-top);
+
+    &::after {
+      content: "\276F";
+      width: 1em;
+      height: 1em;
+      margin-left: 25px;
+      font-size: 26px;
+      @include transition(all);
+      color: $blue;
+      transform: rotate(90deg);
+    }
+  }
+
+  &-title {
+    margin-bottom: 12px;
+    @include sizeWeightColor(14px, 600, $blue);
+    @include transition(font-size);
+  }
+
+  &-description {
+    @include sizeWeightColor(12px, 600, $gray);
+    padding-bottom: 4px;
+    // To make one line appear in description.
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 55vw;
+  }
+
+  &-content {
+    // To make content disappear when is close.
+    max-height: 0;
+    @include sizeWeightColor(13px, 400, $black);
+    @include transition(max-height);
+    @include transition(margin-bottom);
+    background-color: whitesmoke;
+
+    > p {
+      padding: 10px 25px 25px 25px;
+    }
+  }
+}
+
+input {
+  position: absolute;
+  // To make checkbox disappear.
+  opacity: 0;
+  z-index: -1;
+
+  &:checked {
+    + .panel-label {
+      // To distinguish open panel with space.
+      margin-top: 30px;
+
+      &::after {
+        // Rotate icon.
+        transform: rotate(-90deg);
+      }
+
+      > div > .panel-title {
+        // Change title font-size.
+        @include transition(font-size);
+        font-size: 18px;
+      }
+    }
+
+    ~ .panel-content {
+      max-height: 100vh;
+      @include transition(all);
+      // To distinguish open panel with space.
+      margin-bottom: 30px;
+    }
+  }
+}
+
+// Add media queries.
+@include mediaMinMax($tablet_breakpoint, $wide_breakpoint, 69%);
+
+@include mediaMinMax($wide_breakpoint, $x_wide_breakpoint, 70%);
+
+@media (min-width: $x_wide_breakpoint) {
+  #my-accordion {
+    width: 72%;
+  }
+}
